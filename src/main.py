@@ -5,13 +5,15 @@ import json
 ROOT_DIR = os.path.join("../")
 IMG_DIR = os.path.join(ROOT_DIR, "Images")
 JSON_DIR = os.path.join(ROOT_DIR, "Json")
+TH_OUT = os.path.join(ROOT_DIR, "th_out")
 
 
-def find_c(image):
+def find_c(image, filename):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, th = cv2.threshold(gray, 70, 255, cv2.THRESH_BINARY)
     contours, _ = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     image = cv2.drawContours(image, contours, -1, (0, 255, 0), 3)
+    cv2.imwrite(os.path.join(TH_OUT, filename), th)
     return image, contours
 
 
@@ -30,7 +32,7 @@ def main():
 
     for file in image_list:
         img = cv2.imread(os.path.join(IMG_DIR, file))
-        img, contours = find_c(img)
+        img, contours = find_c(img, file)
 
         for n in range(0, len(contours)):
             list_x = []
